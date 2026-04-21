@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجلة الثانوية الثالثة - الخبر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Reem+Kufi:wght@400;500;600;700&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+–bg-cream: #F5E6D3;
+–bg-pattern: #E8D4BC;
+–deep-green: #1E5E3F;
+–deep-brown: #3D2B1F;
+–accent-pink: #E8A5A5;
+–accent-coral: #D4684E;
+–accent-purple: #6B4E8C;
+–accent-yellow: #F4B942;
+–text-dark: #2B1810;
+–text-light: #F5E6D3;
+}
+
+body {
+font-family: ‘Tajawal’, sans-serif;
+background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf3 100%);
+min-height: 100vh;
+padding: 20px;
+color: var(–text-dark);
+}
+
+/* ===== Control Panel ===== */
+.controls {
+max-width: 900px;
+margin: 0 auto 30px;
+background: white;
+border-radius: 24px;
+padding: 28px;
+box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
+.controls h2 {
+font-family: ‘Reem Kufi’, sans-serif;
+font-size: 1.6rem;
+margin-bottom: 22px;
+color: var(–deep-green);
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.controls h2::before {
+content: ‘’;
+width: 10px;
+height: 32px;
+background: linear-gradient(to bottom, var(–deep-green), var(–accent-coral));
+border-radius: 5px;
+}
+
+.info-banner {
+background: linear-gradient(135deg, #fff8ef, #e8f5ef);
+border-right: 4px solid var(–deep-green);
+padding: 12px 16px;
+border-radius: 12px;
+font-size: 0.88rem;
+margin-bottom: 20px;
+color: #444;
+line-height: 1.6;
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label { font-weight: 500; font-size: 0.9rem; color: #555; }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+padding: 12px 15px;
+border: 2px solid #e5e9f0;
+border-radius: 12px;
+font-family: ‘Tajawal’, sans-serif;
+font-size: 0.95rem;
+transition: all 0.2s;
+background: #fafbfc;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+outline: none;
+border-color: var(–deep-green);
+background: white;
+box-shadow: 0 0 0 4px rgba(30,94,63,0.1);
+}
+
+.form-group textarea { resize: vertical; min-height: 70px; }
+
+.image-upload {
+padding: 20px;
+border: 2px dashed #cbd5e0;
+border-radius: 12px;
+text-align: center;
+cursor: pointer;
+transition: all 0.2s;
+background: #fafbfc;
+position: relative;
+}
+
+.image-upload:hover {
+border-color: var(–deep-green);
+background: #f0f9f4;
+}
+
+.image-upload input { display: none; }
+
+.image-upload.has-image {
+padding: 0;
+border-style: solid;
+overflow: hidden;
+min-height: 120px;
+}
+
+.image-upload.has-image img {
+width: 100%;
+height: 120px;
+object-fit: cover;
+}
+
+.image-upload-hint {
+color: #777;
+font-size: 0.85rem;
+}
+
+.image-upload-hint strong { color: var(–deep-green); }
+
+.btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+button {
+padding: 13px 22px;
+border: none;
+border-radius: 12px;
+font-family: ‘Tajawal’, sans-serif;
+font-weight: 700;
+font-size: 0.92rem;
+cursor: pointer;
+transition: all 0.2s;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+}
+
+button:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+.btn-add { background: linear-gradient(135deg, var(–deep-green), #2d7a54); color: white; }
+.btn-add:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(30,94,63,0.4); }
+
+.btn-pdf { background: linear-gradient(135deg, #DC2626, #991B1B); color: white; }
+.btn-pdf:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(220,38,38,0.35); }
+
+.btn-img { background: linear-gradient(135deg, var(–accent-coral), #a04a38); color: white; }
+.btn-img:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,104,78,0.35); }
+
+.btn-clear { background: #f0f2f5; color: var(–text-dark); }
+.btn-clear:hover:not(:disabled) { background: #e5e9f0; }
+
+.news-list { margin-top: 20px; border-top: 2px dashed #e5e9f0; padding-top: 20px; }
+.news-list h3 { font-size: 1rem; margin-bottom: 12px; color: #666; }
+
+.news-item-mini {
+background: #f8f9fb;
+padding: 10px 15px;
+border-radius: 10px;
+margin-bottom: 8px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.9rem;
+border-right: 4px solid var(–deep-green);
+gap: 10px;
+}
+
+.news-item-mini span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.news-item-mini button { padding: 4px 10px; font-size: 0.8rem; background: #ffe0e0; color: #c33; }
+.warning { color: var(–accent-coral); font-weight: 600; font-size: 0.85rem; margin-bottom: 10px; }
+
+.status-msg {
+margin-top: 12px;
+padding: 12px 16px;
+border-radius: 10px;
+font-size: 0.9rem;
+display: none;
+line-height: 1.6;
+}
+.status-msg.show { display: block; }
+.status-msg.success { background: #d1fae5; color: #065f46; }
+.status-msg.loading { background: #dbeafe; color: #1e40af; }
+.status-msg.error { background: #fee2e2; color: #991b1b; }
+
+/* Preview Modal */
+.preview-modal {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.9);
+z-index: 1000;
+padding: 20px;
+overflow-y: auto;
+}
+.preview-modal.show { display: block; }
+.preview-modal-content {
+max-width: 800px;
+margin: 0 auto;
+background: white;
+border-radius: 16px;
+padding: 20px;
+}
+.preview-modal h3 {
+font-family: ‘Reem Kufi’, sans-serif;
+margin-bottom: 12px;
+color: var(–deep-green);
+}
+.preview-modal p {
+background: #fef3c7;
+padding: 12px;
+border-radius: 10px;
+margin-bottom: 16px;
+font-size: 0.9rem;
+line-height: 1.7;
+color: #78350f;
+}
+.preview-modal img {
+width: 100%;
+height: auto;
+border-radius: 12px;
+border: 2px solid #e5e9f0;
+margin-bottom: 16px;
+}
+.preview-modal .close-btn {
+background: var(–deep-green);
+color: white;
+width: 100%;
+padding: 14px;
+}
+
+/* ===== MAGAZINE COVER ===== */
+.magazine-wrapper { max-width: 900px; margin: 0 auto; }
+
+.magazine {
+background: var(–bg-cream);
+width: 100%;
+aspect-ratio: 1 / 1.55;
+position: relative;
+overflow: hidden;
+box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+border-radius: 8px;
+display: flex;
+flex-direction: column;
+}
+
+/* Decorative diamond pattern in header */
+.mag-pattern {
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 200px;
+background-image:
+radial-gradient(circle at 25% 50%, var(–accent-pink) 8px, transparent 9px),
+radial-gradient(circle at 75% 50%, var(–accent-pink) 8px, transparent 9px);
+background-size: 60px 60px;
+background-position: 0 0, 30px 30px;
+opacity: 0.4;
+z-index: 0;
+}
+
+/* Header Section */
+.mag-header {
+position: relative;
+z-index: 2;
+padding: 30px 35px 15px;
+flex-shrink: 0;
+}
+
+.mag-top-row {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 10px;
+}
+
+.mag-issue-num {
+font-family: ‘Cairo’, sans-serif;
+font-size: 1.3rem;
+font-weight: 900;
+color: var(–accent-purple);
+}
+
+.mag-search-label {
+font-size: 0.75rem;
+color: var(–text-dark);
+opacity: 0.7;
+}
+
+.mag-title {
+font-family: ‘Reem Kufi’, sans-serif;
+font-size: 5.5rem;
+font-weight: 700;
+color: var(–accent-purple);
+line-height: 0.95;
+letter-spacing: -3px;
+text-align: center;
+margin: 5px 0 15px;
+}
+
+.mag-subtitle-bar {
+background: rgba(107,78,140,0.15);
+padding: 10px 20px;
+border-radius: 4px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.82rem;
+color: var(–text-dark);
+font-weight: 500;
+letter-spacing: 0.5px;
+}
+
+.mag-subtitle-bar .dashes {
+color: var(–accent-purple);
+font-weight: 700;
+}
+
+/* ===== News Mosaic Grid ===== */
+.news-mosaic {
+position: relative;
+z-index: 2;
+flex: 1;
+padding: 15px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+overflow: hidden;
+}
+
+.news-empty-mosaic {
+grid-column: 1 / -1;
+text-align: center;
+padding: 60px 20px;
+color: #999;
+font-size: 1rem;
+border: 3px dashed #c5a887;
+border-radius: 16px;
+background: rgba(255,255,255,0.3);
+margin: auto 0;
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 200px;
+}
+
+.news-tile {
+border-radius: 8px;
+overflow: hidden;
+position: relative;
+display: flex;
+flex-direction: column;
+min-height: 0;
+}
+
+/* Tile variants */
+.tile-image-top {
+background: white;
+}
+
+.tile-image-top .tile-img-wrapper {
+width: 100%;
+aspect-ratio: 16/10;
+overflow: hidden;
+background: #e8d4bc;
+position: relative;
+}
+
+.tile-image-top .tile-img-wrapper img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.tile-image-top .tile-img-placeholder {
+width: 100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 3rem;
+background: linear-gradient(135deg, #e8d4bc, #d4b896);
+color: rgba(61,43,31,0.3);
+}
+
+.tile-image-top .tile-text {
+padding: 10px 12px;
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 4px;
+background: var(–bg-cream);
+}
+
+/* Colored tiles */
+.tile-color {
+padding: 14px 16px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+gap: 6px;
+min-height: 160px;
+}
+
+.tile-color.green { background: var(–deep-green); color: var(–text-light); }
+.tile-color.brown { background: var(–deep-brown); color: var(–text-light); }
+.tile-color.purple { background: var(–accent-purple); color: var(–text-light); }
+.tile-color.coral { background: var(–accent-coral); color: var(–text-light); }
+
+.tile-color .tile-category-inline {
+font-family: ‘Reem Kufi’, sans-serif;
+font-size: 0.6rem;
+letter-spacing: 1.5px;
+opacity: 0.8;
+font-weight: 600;
+margin-bottom: 4px;
+}
+
+/* Typography inside tiles */
+.tile-title {
+font-family: ‘Cairo’, sans-serif;
+font-size: 0.95rem;
+font-weight: 900;
+line-height: 1.25;
+margin-bottom: 4px;
+}
+
+.tile-image-top .tile-title {
+color: var(–text-dark);
+}
+
+.tile-image-top[data-accent=“coral”] .tile-title::before {
+content: ‘’;
+display: block;
+width: 30px;
+height: 3px;
+background: var(–accent-coral);
+margin-bottom: 6px;
+border-radius: 2px;
+}
+
+.tile-image-top[data-accent=“green”] .tile-title::before {
+content: ‘’;
+display: block;
+width: 30px;
+height: 3px;
+background: var(–deep-green);
+margin-bottom: 6px;
+border-radius: 2px;
+}
+
+.tile-image-top[data-accent=“purple”] .tile-title::before {
+content: ‘’;
+display: block;
+width: 30px;
+height: 3px;
+background: var(–accent-purple);
+margin-bottom: 6px;
+border-radius: 2px;
+}
+
+.tile-desc {
+font-size: 0.72rem;
+line-height: 1.45;
+display: -webkit-box;
+-webkit-line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+}
+
+.tile-image-top .tile-desc { color: #444; }
+
+/* Category badge for image tiles */
+.tile-category {
+font-family: ‘Reem Kufi’, sans-serif;
+font-size: 0.58rem;
+letter-spacing: 1px;
+font-weight: 700;
+color: var(–accent-coral);
+margin-bottom: 2px;
+text-transform: uppercase;
+}
+
+/* Grid layouts based on count */
+.news-mosaic[data-count=“2”] {
+grid-template-columns: 1fr;
+grid-template-rows: 1fr 1fr;
+}
+.news-mosaic[data-count=“2”] .news-tile { min-height: 0; }
+.news-mosaic[data-count=“2”] .tile-color { min-height: 0; }
+.news-mosaic[data-count=“2”] .tile-title { font-size: 1.3rem; }
+.news-mosaic[data-count=“2”] .tile-desc { font-size: 0.85rem; -webkit-line-clamp: 4; }
+.news-mosaic[data-count=“2”] .tile-image-top .tile-img-wrapper { aspect-ratio: 16/8; }
+
+.news-mosaic[data-count=“3”] {
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+}
+.news-mosaic[data-count=“3”] .news-tile:first-child {
+grid-column: 1 / -1;
+}
+.news-mosaic[data-count=“3”] .news-tile:first-child .tile-title { font-size: 1.2rem; }
+.news-mosaic[data-count=“3”] .tile-title { font-size: 0.95rem; }
+
+.news-mosaic[data-count=“4”] {
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+}
+
+.news-mosaic[data-count=“5”] {
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 1fr 1fr 1fr;
+}
+.news-mosaic[data-count=“5”] .news-tile:first-child {
+grid-column: 1 / -1;
+}
+.news-mosaic[data-count=“5”] .news-tile:first-child .tile-img-wrapper { aspect-ratio: 20/7; }
+.news-mosaic[data-count=“5”] .news-tile:first-child .tile-title { font-size: 1.15rem; }
+.news-mosaic[data-count=“5”] .tile-title { font-size: 0.88rem; }
+.news-mosaic[data-count=“5”] .tile-desc { font-size: 0.68rem; -webkit-line-clamp: 2; }
+.news-mosaic[data-count=“5”] .tile-color { min-height: 130px; padding: 10px 12px; }
+
+/* ===== Footer ===== */
+.mag-footer {
+background: var(–accent-purple);
+color: var(–text-light);
+padding: 14px 30px;
+z-index: 3;
+position: relative;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.mag-footer-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+border-bottom: 1px solid rgba(245,230,211,0.2);
+padding-bottom: 8px;
+}
+
+.mag-footer-info {
+display: flex;
+gap: 20px;
+flex-wrap: wrap;
+}
+
+.mag-footer-info div { display: flex; flex-direction: column; gap: 1px; }
+
+.mag-footer-info .label {
+font-size: 0.58rem;
+color: var(–accent-yellow);
+letter-spacing: 1.2px;
+font-family: ‘Reem Kufi’, sans-serif;
+font-weight: 600;
+}
+
+.mag-footer-info .value { font-weight: 600; font-size: 0.8rem; }
+
+.mag-footer-club {
+background: var(–accent-yellow);
+color: var(–deep-brown);
+padding: 6px 14px;
+border-radius: 20px;
+font-size: 0.68rem;
+font-weight: 700;
+}
+
+.mag-footer-bottom {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.75rem;
+}
+
+.mag-school-name {
+font-family: ‘Reem Kufi’, sans-serif;
+font-weight: 600;
+letter-spacing: 0.5px;
+}
+
+.mag-date-footer {
+opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+.form-row { grid-template-columns: 1fr; }
+.mag-title { font-size: 3rem; }
+.mag-header { padding: 20px 18px 10px; }
+.news-mosaic { padding: 10px; }
+.mag-footer { padding: 12px 18px; }
+.tile-title { font-size: 0.85rem !important; }
+.tile-desc { font-size: 0.7rem !important; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="controls" id="controls">
+  <h2>إضافة خبر جديد</h2>
+
+  <div class="info-banner">
+    💡 صممي غلاف مجلتك بستايل احترافي! أضيفي صور لأخبارك (اختياري) وشوفي النتيجة تتنظم تلقائياً. <strong>من 2 إلى 5 أخبار</strong>.
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>التصنيف</label>
+      <select id="newsCategory">
+        <option value="أنشطة ومناسبات">أنشطة ومناسبات</option>
+        <option value="إنجازات الطالبات">إنجازات الطالبات</option>
+        <option value="إعلانات إدارية">إعلانات إدارية</option>
+        <option value="مقالات ونصائح">مقالات ونصائح</option>
+        <option value="أخبار مصورة">أخبار مصورة</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>الأيقونة (لو ما فيه صورة)</label>
+      <select id="newsIcon">
+        <option value="🎉">🎉 احتفال</option>
+        <option value="🏆">🏆 إنجاز</option>
+        <option value="📢">📢 إعلان</option>
+        <option value="💡">💡 نصيحة</option>
+        <option value="📸">📸 صورة</option>
+        <option value="📚">📚 تعليمي</option>
+        <option value="🎨">🎨 فني</option>
+        <option value="⚽">⚽ رياضي</option>
+        <option value="🌟">🌟 مميز</option>
+        <option value="📅">📅 موعد</option>
+        <option value="🎓">🎓 تخرج</option>
+        <option value="🔬">🔬 علمي</option>
+        <option value="💻">💻 تقني</option>
+        <option value="❤️">❤️ اجتماعي</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group full">
+    <label>صورة الخبر (اختياري)</label>
+    <label class="image-upload" id="imageUpload">
+      <input type="file" id="newsImage" accept="image/*">
+      <div class="image-upload-hint" id="imageHint">
+        📷 اضغطي لاختيار صورة<br>
+        <strong>أو اتركي فاضي لعرض الخبر بلون فقط</strong>
+      </div>
+    </label>
+  </div>
+
+  <div class="form-group full">
+    <label>عنوان الخبر</label>
+    <input type="text" id="newsTitle" placeholder="مثال: حفل تكريم الطالبات المتفوقات">
+  </div>
+
+  <div class="form-group full">
+    <label>وصف مختصر</label>
+    <textarea id="newsDesc" placeholder="اكتبي وصف قصير عن الخبر..."></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>رقم العدد</label>
+      <input type="text" id="issueNum" value="01">
+    </div>
+    <div class="form-group">
+      <label>التاريخ / الأسبوع</label>
+      <input type="text" id="issueDate" placeholder="مثال: ١ - ٧ رمضان ١٤٤٧">
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-add" onclick="addNews()">➕ إضافة الخبر</button>
+    <button class="btn-pdf" onclick="exportPDF()" id="btnPdf">📄 تحميل PDF</button>
+    <button class="btn-img" onclick="exportImage()" id="btnImg">🖼️ تحميل صورة</button>
+    <button class="btn-clear" onclick="clearAll()">🗑️ مسح الكل</button>
+  </div>
+
+  <div class="status-msg" id="statusMsg"></div>
+
+  <div class="news-list" id="newsListMini">
+    <h3>الأخبار المضافة (<span id="newsCount">0</span>/5)</h3>
+    <div id="newsItemsMini"></div>
+  </div>
+</div>
+
+<!-- Magazine Cover -->
+
+<div class="magazine-wrapper">
+  <div class="magazine" id="magazine">
+
+```
+<div class="mag-pattern"></div>
+
+<!-- Header -->
+<div class="mag-header">
+  <div class="mag-top-row">
+    <span class="mag-issue-num" id="displayIssueNum">01</span>
+    <span class="mag-search-label">مجلة أسبوعية ✦</span>
+  </div>
+
+  <h1 class="mag-title">صدى المدرسة</h1>
+
+  <div class="mag-subtitle-bar">
+    <span class="dashes">━━━━</span>
+    <span>اختيارات من أخبار وإنجازات الطالبات</span>
+    <span id="displayDate">الأسبوع الأول</span>
+  </div>
+</div>
+
+<!-- News Mosaic -->
+<div class="news-mosaic" id="newsMosaic" data-count="0">
+  <div class="news-empty-mosaic" id="emptyState">
+    ✨ ابدئي بإضافة الأخبار (من 2 إلى 5 أخبار) ✨
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="mag-footer">
+  <div class="mag-footer-top">
+    <div class="mag-footer-info">
+      <div>
+        <span class="label">مديرة المدرسة</span>
+        <span class="value">منى الزهراني</span>
+      </div>
+      <div>
+        <span class="label">منسقة المجلة</span>
+        <span class="value">أمل المرير</span>
+      </div>
+    </div>
+    <div class="mag-footer-club">✦ بالتعاون مع النادي الرقمي</div>
+  </div>
+  <div class="mag-footer-bottom">
+    <span class="mag-school-name">الثانوية الثالثة بالخبر</span>
+    <span class="mag-date-footer" id="displayDateFooter">الأسبوع الأول</span>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- Preview Modal -->
+
+<div class="preview-modal" id="previewModal">
+  <div class="preview-modal-content">
+    <h3 id="previewTitle">📸 الصورة جاهزة!</h3>
+    <p id="previewInstructions">
+      <strong>لحفظ الصورة:</strong><br>
+      • <strong>آيفون:</strong> اضغطي مطولاً على الصورة ثم "حفظ الصورة"<br>
+      • <strong>أندرويد:</strong> اضغطي مطولاً على الصورة ثم "تنزيل الصورة"<br>
+      • <strong>الكمبيوتر:</strong> اضغطي بالزر الأيمن وحفظ الصورة باسم
+    </p>
+    <img id="previewImage" src="" alt="معاينة الغلاف">
+    <button class="close-btn" onclick="closePreview()">إغلاق</button>
+  </div>
+</div>
+
+<script>
+  let newsItems = [];
+  let currentImage = null;
+  const MAX_NEWS = 5;
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Handle image upload
+  document.getElementById('newsImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      currentImage = ev.target.result;
+      const wrapper = document.getElementById('imageUpload');
+      wrapper.classList.add('has-image');
+      wrapper.innerHTML = `<input type="file" id="newsImage" accept="image/*"><img src="${currentImage}" alt="معاينة">`;
+      // Re-attach listener
+      document.getElementById('newsImage').addEventListener('change', arguments.callee);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function resetImageUpload() {
+    currentImage = null;
+    const wrapper = document.getElementById('imageUpload');
+    wrapper.classList.remove('has-image');
+    wrapper.innerHTML = `
+      <input type="file" id="newsImage" accept="image/*">
+      <div class="image-upload-hint">
+        📷 اضغطي لاختيار صورة<br>
+        <strong>أو اتركي فاضي لعرض الخبر بلون فقط</strong>
+      </div>
+    `;
+    document.getElementById('newsImage').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        currentImage = ev.target.result;
+        const wrapper2 = document.getElementById('imageUpload');
+        wrapper2.classList.add('has-image');
+        wrapper2.innerHTML = `<input type="file" id="newsImage" accept="image/*"><img src="${currentImage}" alt="معاينة">`;
+        document.getElementById('newsImage').addEventListener('change', arguments.callee);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function showStatus(msg, type = 'loading') {
+    const el = document.getElementById('statusMsg');
+    el.innerHTML = msg;
+    el.className = 'status-msg show ' + type;
+    if (type === 'success' || type === 'error') {
+      setTimeout(() => { el.className = 'status-msg'; }, 6000);
+    }
+  }
+
+  function addNews() {
+    if (newsItems.length >= MAX_NEWS) {
+      alert('وصلتي الحد الأقصى (5 أخبار).');
+      return;
+    }
+    const category = document.getElementById('newsCategory').value;
+    const icon = document.getElementById('newsIcon').value;
+    const title = document.getElementById('newsTitle').value.trim();
+    const desc = document.getElementById('newsDesc').value.trim();
+    if (!title) { alert('الرجاء إدخال عنوان الخبر'); return; }
+    
+    newsItems.push({ category, icon, title, desc, image: currentImage });
+    
+    document.getElementById('newsTitle').value = '';
+    document.getElementById('newsDesc').value = '';
+    resetImageUpload();
+    
+    renderNews();
+    updateIssueInfo();
+  }
+
+  function deleteNews(index) {
+    newsItems.splice(index, 1);
+    renderNews();
+  }
+
+  function clearAll() {
+    if (confirm('هل تريدين مسح جميع الأخبار؟')) {
+      newsItems = [];
+      renderNews();
+    }
+  }
+
+  function updateIssueInfo() {
+    const issueNum = document.getElementById('issueNum').value || '01';
+    const issueDate = document.getElementById('issueDate').value || 'الأسبوع الأول';
+    document.getElementById('displayIssueNum').textContent = issueNum;
+    document.getElementById('displayDate').textContent = issueDate;
+    document.getElementById('displayDateFooter').textContent = issueDate;
+  }
+
+  document.getElementById('issueNum').addEventListener('input', updateIssueInfo);
+  document.getElementById('issueDate').addEventListener('input', updateIssueInfo);
+
+  // Color rotation for colored tiles
+  const COLOR_VARIANTS = ['green', 'brown', 'purple', 'coral'];
+  const ACCENT_VARIANTS = ['coral', 'green', 'purple'];
+
+  function renderNews() {
+    const container = document.getElementById('newsMosaic');
+    const listMini = document.getElementById('newsItemsMini');
+    const count = document.getElementById('newsCount');
+    count.textContent = newsItems.length;
+    container.setAttribute('data-count', newsItems.length);
+
+    if (newsItems.length === 0) {
+      container.innerHTML = '<div class="news-empty-mosaic">✨ ابدئي بإضافة الأخبار (من 2 إلى 5 أخبار) ✨</div>';
+      listMini.innerHTML = '<p style="color:#999;font-size:0.85rem;">لا توجد أخبار بعد</p>';
+      return;
+    }
+
+    container.innerHTML = newsItems.map((item, i) => {
+      if (item.image) {
+        // Image tile (white background)
+        const accent = ACCENT_VARIANTS[i % ACCENT_VARIANTS.length];
+        return `
+          <div class="news-tile tile-image-top" data-accent="${accent}">
+            <div class="tile-img-wrapper">
+              <img src="${item.image}" alt="${item.title}">
+            </div>
+            <div class="tile-text">
+              <div class="tile-category">${item.category}</div>
+              <div class="tile-title">${item.title}</div>
+              ${item.desc ? `<div class="tile-desc">${item.desc}</div>` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        // Colored tile
+        const color = COLOR_VARIANTS[i % COLOR_VARIANTS.length];
+        return `
+          <div class="news-tile tile-color ${color}">
+            <div>
+              <div class="tile-category-inline">${item.icon} ${item.category}</div>
+              <div class="tile-title">${item.title}</div>
+            </div>
+            ${item.desc ? `<div class="tile-desc">${item.desc}</div>` : ''}
+          </div>
+        `;
+      }
+    }).join('');
+
+    const warning = newsItems.length < 2 
+      ? '<p class="warning">⚠️ أضيفي خبر آخر على الأقل (الحد الأدنى خبرين)</p>' 
+      : '';
+
+    listMini.innerHTML = warning + newsItems.map((item, i) => `
+      <div class="news-item-mini">
+        <span>${i + 1}. ${item.image ? '🖼️' : item.icon} ${item.title}</span>
+        <button onclick="deleteNews(${i})">حذف</button>
+      </div>
+    `).join('');
+  }
+
+  async function captureMagazine() {
+    const element = document.getElementById('magazine');
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+    await new Promise(r => setTimeout(r, 400));
+
+    return await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#F5E6D3',
+      logging: false,
+      imageTimeout: 15000
+    });
+  }
+
+  function downloadDataURL(dataURL, filename) {
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => document.body.removeChild(link), 100);
+  }
+
+  function showPreview(dataURL) {
+    const modal = document.getElementById('previewModal');
+    const img = document.getElementById('previewImage');
+    img.src = dataURL;
+    modal.classList.add('show');
+    window.scrollTo(0, 0);
+  }
+
+  function closePreview() {
+    document.getElementById('previewModal').classList.remove('show');
+  }
+
+  async function exportImage() {
+    if (newsItems.length < 2) {
+      if (!confirm('الأفضل إضافة خبرين على الأقل. هل تريدين المتابعة؟')) return;
+    }
+    const btn = document.getElementById('btnImg');
+    btn.disabled = true;
+    showStatus('⏳ جاري تحضير الصورة... الرجاء الانتظار', 'loading');
+
+    try {
+      const canvas = await captureMagazine();
+      const dataURL = canvas.toDataURL('image/png', 1.0);
+      const issueNum = document.getElementById('issueNum').value || '01';
+      const filename = `magazine_issue_${issueNum}.png`;
+
+      if (isIOS) {
+        showPreview(dataURL);
+        showStatus('✅ اضغطي مطولاً على الصورة لحفظها', 'success');
+      } else {
+        try {
+          downloadDataURL(dataURL, filename);
+          showStatus('✅ تم تحميل الصورة! تفقدي مجلد التنزيلات', 'success');
+        } catch (e) {
+          showPreview(dataURL);
+          showStatus('✅ اضغطي مطولاً على الصورة لحفظها', 'success');
+        }
+      }
+      btn.disabled = false;
+    } catch (err) {
+      console.error('Image export error:', err);
+      showStatus('❌ حصل خطأ: ' + err.message, 'error');
+      btn.disabled = false;
+    }
+  }
+
+  async function exportPDF() {
+    if (newsItems.length < 2) {
+      if (!confirm('الأفضل إضافة خبرين على الأقل. هل تريدين المتابعة؟')) return;
+    }
+    const btn = document.getElementById('btnPdf');
+    btn.disabled = true;
+    showStatus('⏳ جاري تحضير ملف PDF... الرجاء الانتظار', 'loading');
+
+    try {
+      const canvas = await captureMagazine();
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+      });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+
+      const issueNum = document.getElementById('issueNum').value || '01';
+      const filename = `magazine_issue_${issueNum}.pdf`;
+
+      if (isIOS) {
+        const pdfBlob = pdf.output('blob');
+        const blobURL = URL.createObjectURL(pdfBlob);
+        const newWin = window.open(blobURL, '_blank');
+        if (!newWin) {
+          const pdfDataUri = pdf.output('datauristring');
+          window.location.href = pdfDataUri;
+        }
+        showStatus('✅ افتحي قائمة المشاركة واختاري "حفظ في الملفات"', 'success');
+      } else {
+        pdf.save(filename);
+        showStatus('✅ تم تحميل ملف PDF! تفقدي مجلد التنزيلات', 'success');
+      }
+      btn.disabled = false;
+    } catch (err) {
+      console.error('PDF export error:', err);
+      showStatus('❌ حصل خطأ: ' + err.message + '<br>جربي تحميل الصورة بدلاً من الـ PDF', 'error');
+      btn.disabled = false;
+    }
+  }
+
+  renderNews();
+</script>
+
+</body>
+</html>
